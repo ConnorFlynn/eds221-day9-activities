@@ -37,13 +37,36 @@ mack_creek_lengths <- mack_creek_vertebrates %>%
   clean_names() %>% 
   select(year:sampledate) %>% 
   filter(section == "CC") %>% 
-  mutate(across(where(is.character, tolower))) %>% 
+  mutate(across(where(is.character), tolower)) %>% 
   drop_na(species) %>% 
   group_by(species) %>% 
   summarize(mean_length_cm = mean(length1, na.rm = TRUE),
             sd_length_cm = sd(length1, na.rm = TRUE)) %>% 
   ungroup()
 ```
+
+```{r}
+library(reprex)
+library(tidyverse)
+
+
+buses <- tribble(~bus_id, ~bus_route, ~bus_driver,
+                 "bus_a", "work", "dan", 
+                 "bus_b", "school", "tony", 
+                 "bus_c", "party", "patty") 
+
+buses_upper <- buses %>% 
+  mutate(across(where(is.character), toupper))
+
+## We want all of our column values to be upper case because the data frame is
+## awesome. A common mistake could be to use the function toupper() within the 
+## where function, but it belongs within the across function
+
+
+
+
+```
+
 
 ### reprex 2
 
@@ -55,10 +78,28 @@ mack_creek_vertebrates %>%
   clean_names() %>% 
   filter(species == "ONCL") %>% 
   ggplot(aes(x = length1, y = weight)) +
-         geom_point(aes(shape = 12), color = "purple") +
+         geom_jitter(aes(color = species), alpha = 0.5) +
          theme_minimal() +
          labs(x = "Cutthroat trout length (cm)",
               y = "Weight (g)")
+```
+
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+
+
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+         geom_point(shape = 5, alpha = 0.5) +
+         theme_minimal() +
+         labs(x = "Flipper Length",
+              y = "Weight (g)")
+
+## Shape = 5 belong outside of the aes() function because it is not based on 
+## a variable
+
 ```
 
 ## End
